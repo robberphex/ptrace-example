@@ -199,9 +199,7 @@ fn put_data(pid: Pid, addr: i64, buf: &mut Vec<u8>, len: i64) {
         unsafe {
             ptrace::write(pid, (addr + i * 8) as *mut _, value as *mut c_void).unwrap();
         }
-        value = ptrace::read(pid, (addr + i * 8) as *mut _).unwrap();
         log::debug!("[put_data]addr={:x},value={:x}", (addr + i * 8), value);
-        log::debug!("[put_data]value f: {:x}", value);
         i += 1;
     }
     j = len % word_size;
