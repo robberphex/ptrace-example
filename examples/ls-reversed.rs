@@ -7,6 +7,8 @@ use std::process::{exit, Command, Stdio};
 
 // from https://www.linuxjournal.com/article/6100
 fn main() {
+    env_logger::init();
+
     match unsafe { fork() } {
         Ok(ForkResult::Child) => {
             run_child();
@@ -30,7 +32,7 @@ fn run_parent(pid: Pid) {
             Ok(WaitStatus::Stopped(_pid_t, _sig_num)) => {
                 let regs = ptrace::getregs(pid).unwrap();
                 let orig_rax = regs.orig_rax as libc::c_long;
-                log::debug!("The child made a system call {}", orig_rax);
+                log::trace!("The child made a system call {}", orig_rax);
                 if orig_rax == libc::SYS_write {
                     if insyscall == 0 {
                         /* Syscall entry */
